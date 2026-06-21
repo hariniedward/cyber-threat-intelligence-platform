@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Run Scan — CTI Platform{% endblock %}
+{% block page_title %}Dark Web Threat Scan{% endblock %}
+
+{% block content %}
+
+<div class="grid-2 mb-24" style="align-items:start">
+
+  <!-- ── Scan Controls ──────────────────────────────────────────────── -->
+  <div>
+    <div class="card mb-16">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" style="width:18px;height:18px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <h3>Scan Configuration</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Scan Mode</label>
+          <select class="form-control" id="scanMode">
+            <option value="full">Full Spectrum Scan</option>
+            <option value="targeted">Targeted Source Scan</option>
+            <option value="quick">Quick Threat Check</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Threat Sensitivity</label>
+          <select class="form-control" id="scanSensitivity">
+            <option value="high">High (All threats)</option>
+            <option value="medium" selected>Medium (Recommended)</option>
+            <option value="low">Low (Critical only)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Keyword (optional)</label>
+          <input type="text" class="form-control" id="targetKeyword" placeholder="e.g. company email domain"/>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="startScanBtn" style="flex:1;justify-content:center">
+            ⚡ START SCAN
+          </button>
+          <button class="btn btn-secondary" onclick="location.reload()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Source List -->
+    <div class="card">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" style="width:18px;height:18px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <h3>Monitored Sources</h3>
+      </div>
+      <div class="card-body" style="padding:12px 20px">
+        {% set sources = [
+          ("LeakDB-Mirror-01",    "paste_site",   "active"),
+          ("DataBreach-Forum-02", "forum_dump",   "active"),
+          ("ThreatFeed-Alpha",    "threat_feed",  "active"),
+          ("DarkPaste-Node-07",   "paste_site",   "active"),
+          ("Breach-Archive-99",   "archive",      "active"),
+          ("ShadowLeaks-v2",      "forum_dump",   "active"),
+          ("OSINT-Aggregate-03",  "osint",        "active"),
+        ] %}
+        {% for name, category, status in sources %}
+        <div class="flex items-center justify-between" style="padding:8px 0;border-bottom:1px solid rgba(26,48,80,.4)">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary)">{{ name }}</div>
+            <div style="font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);text-transform:uppercase">{{ category }}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green)">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>
+            LIVE
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Scan Output Terminal ───────────────────────────────────────── -->
+  <div>
+    <div class="card mb-16">
+      <div class="card-header" style="justify-content:space-between">
+        <div class="flex items-center gap-8">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" style="width:18px;height:18px"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <h3>Scan Console</h3>
+        </div>
+        <div id="scanStatus" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)">
+          IDLE
+        </div>
+      </div>
+      <div class="card-body" style="padding:12px">
+        <!-- Progress -->
+        <div class="scan-progress-wrap">
+          <div class="flex justify-between mb-16" style="margin-bottom:6px">
+            <span style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim)" id="progressText">Waiting to scan...</span>
+            <span style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--neon)" id="progressPct">0%</span>
+          </div>
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="progressBar"></div>
+          </div>
+        </div>
+        <!-- Terminal -->
+        <div class="terminal" id="scanLog">
+          <span class="log-line dim terminal-prompt">Cyber Threat Intelligence Platform v1.0</span><br>
+          <span class="log-line dim terminal-prompt">Ready. Press START SCAN to begin.</span><br>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scan Result Summary (populated after scan) -->
+    <div class="card" id="resultCard" style="display:none">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="width:18px;height:18px"><polyline points="20 6 9 17 4 12"/></svg>
+        <h3>Scan Results Summary</h3>
+      </div>
+      <div class="card-body" id="resultBody"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tor Status Panel -->
+<div class="card">
+  <div class="card-header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" style="width:18px;height:18px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+    <h3>Network Routing Status</h3>
+    <div style="margin-left:auto;font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim)">ACADEMIC DEMO MODE</div>
+  </div>
+  <div class="card-body">
+    <div class="grid-3">
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);margin-bottom:6px">TOR CIRCUIT</div>
+        <div style="color:var(--green);font-weight:700">SIMULATED</div>
+      </div>
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);margin-bottom:6px">PROXY</div>
+        <div style="color:var(--cyan);font-family:'Share Tech Mono',monospace">127.0.0.1:9050</div>
+      </div>
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);margin-bottom:6px">IDENTITY</div>
+        <div style="color:var(--green);font-weight:700">PROTECTED</div>
+      </div>
+    </div>
+    <div class="alert-banner info" style="margin-top:8px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span><b>Academic Mode:</b> This platform uses synthetic demo data only. No real Tor connections to illegal sources are made. All data is simulated for educational purposes.</span>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Extend ScanEngine to show result card
+const _origRun = ScanEngine.run.bind(ScanEngine);
+ScanEngine.run = async function() {
+  document.getElementById("scanStatus").textContent = "RUNNING";
+  document.getElementById("scanStatus").style.color  = "var(--neon)";
+  await _origRun();
+  document.getElementById("scanStatus").textContent = "IDLE";
+  document.getElementById("scanStatus").style.color  = "var(--text-dim)";
+};
+
+// Keep progress % in sync
+const origProgress = ScanEngine.setProgress.bind(ScanEngine);
+ScanEngine.setProgress = function(pct, label) {
+  origProgress(pct, label);
+  const el = document.getElementById("progressPct");
+  if (el) el.textContent = pct + "%";
+};
+</script>
+{% endblock %}

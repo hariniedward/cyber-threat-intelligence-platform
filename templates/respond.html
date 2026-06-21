@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Respond to Leak — CTI Platform{% endblock %}
+{% block page_title %}Incident Response Center{% endblock %}
+
+{% block content %}
+
+<!-- Response Cards -->
+<div class="grid-2 mb-24">
+
+  {% set responses = [
+    ("password",    "🔐 Password Leak Response",     "critical", [
+      "Immediately change the compromised password.",
+      "Enable Two-Factor Authentication (2FA/MFA).",
+      "Check login history for unauthorized access.",
+      "Change password on all accounts using same credentials.",
+      "Use a password manager for strong unique passwords.",
+      "Alert your IT security team if it's an org credential.",
+      "Monitor accounts for unusual activity for 30 days."
+    ]),
+    ("aadhaar",     "🪪 Aadhaar Leak Response",       "high", [
+      "Lock your Aadhaar biometrics at resident.uidai.gov.in.",
+      "Activate 'Virtual ID' (VID) for service use instead of real Aadhaar.",
+      "Check Aadhaar authentication history in UIDAI portal.",
+      "Report to UIDAI helpline: 1947.",
+      "File a cybercrime complaint with proof of leak.",
+      "Alert concerned banks and financial institutions.",
+      "Monitor your CIBIL/credit score for identity fraud."
+    ]),
+    ("bank_account","🏦 Bank Details Leak Response",  "critical", [
+      "Contact your bank immediately — call customer care.",
+      "Request to freeze your account temporarily.",
+      "Cancel and reissue all compromised debit/credit cards.",
+      "Change your net banking password and PIN immediately.",
+      "Enable SMS/email alerts for all transactions.",
+      "Report to RBI Banking Ombudsman if bank is unresponsive.",
+      "File an FIR with cyber cell for financial fraud."
+    ]),
+    ("personal_identity", "👤 Personal Data Leak Response", "high", [
+      "Freeze your credit profile with CIBIL/Experian.",
+      "Alert government departments (e.g., passport, tax).",
+      "Change passwords on all personal accounts.",
+      "Monitor social media for impersonation attempts.",
+      "File complaint at cybercrime.gov.in with evidence.",
+      "Inform workplace HR if employee data is involved.",
+      "Contact National Consumer Helpline: 1800-11-4000."
+    ]),
+    ("vpn_credentials", "🏢 Organization Credential Leak", "critical", [
+      "Immediately revoke all leaked VPN access tokens.",
+      "Audit internal network access logs (last 30 days).",
+      "Reset all compromised user credentials.",
+      "Isolate affected systems from internal network.",
+      "Engage your CISO and security response team.",
+      "Notify legal and compliance teams.",
+      "File mandatory breach report to CERT-In within 6 hours."
+    ]),
+    ("email", "📧 Email Leak Response", "medium", [
+      "Enable 2FA on your email account immediately.",
+      "Check for suspicious forwarding rules or filters.",
+      "Review recent login activity and active sessions.",
+      "Change email password to a strong unique one.",
+      "Warn contacts about potential phishing attempts.",
+      "Report to your email provider if account was accessed.",
+      "Monitor inbox for unexpected password reset emails."
+    ]),
+  ] %}
+
+  {% for key, title, sev, steps in responses %}
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-size:14px">{{ title }}</h3>
+      <span class="badge badge-{{ sev }}" style="margin-left:auto">{{ sev.upper() }}</span>
+    </div>
+    <div class="card-body" style="padding:16px 20px">
+      <ol style="margin:0;padding-left:18px;list-style:none">
+        {% for step in steps %}
+        <li style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(26,48,80,.3);font-size:13px;color:var(--text-secondary)">
+          <span class="neon" style="font-family:'Share Tech Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px">
+            {{ '%02d' % loop.index }}
+          </span>
+          {{ step }}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+<!-- Emergency Contacts -->
+<div class="card">
+  <div class="card-header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" style="width:18px;height:18px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.1 1.18 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+    <h3>Emergency Contacts</h3>
+  </div>
+  <div class="card-body">
+    <div class="grid-3">
+      {% for name, contact, color, url in [
+        ("Cybercrime Portal","cybercrime.gov.in","neon","https://cybercrime.gov.in"),
+        ("CERT-In Helpline","1800-11-4949","cyan","https://www.cert-in.org.in"),
+        ("CERT-In Email","incident@cert-in.org.in","orange","mailto:incident@cert-in.org.in"),
+        ("UIDAI Helpline","1947 (Aadhaar)","purple","https://resident.uidai.gov.in"),
+        ("Cyber Cell","1930","red",""),
+        ("National Consumer","1800-11-4000","green",""),
+      ] %}
+      <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+        <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase">{{ name }}</div>
+        {% if url %}
+        <a href="{{ url }}" target="_blank" style="color:var(--{{ color }});font-weight:700;font-size:13px;text-decoration:none;word-break:break-all">{{ contact }}</a>
+        {% else %}
+        <div style="color:var(--{{ color }});font-weight:700;font-size:13px">{{ contact }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

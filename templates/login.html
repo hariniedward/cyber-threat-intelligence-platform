@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CTI Platform — Secure Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+<div class="login-bg">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-ring">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.25 3.75 10.15 9 11.25C17.25 21.15 21 16.25 21 11V5L12 1z"/></svg>
+      </div>
+      <div class="login-title">CTI PLATFORM</div>
+      <div class="login-sub">Cyber Threat Intelligence — Dark Web Monitor</div>
+    </div>
+
+    {% if error %}
+    <div class="error-msg">⚠ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" placeholder="admin" autocomplete="username" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" placeholder="••••••••" autocomplete="current-password" required/>
+      </div>
+      <button type="submit" class="btn btn-primary w-full" style="width:100%;justify-content:center;margin-top:8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Authenticate
+      </button>
+    </form>
+
+    <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--text-dim);font-family:'Share Tech Mono',monospace">
+      Default: admin / admin@123 &nbsp;|&nbsp; Change in Settings
+    </div>
+  </div>
+</div>
+<div id="toast-container"></div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Legal Complaint — CTI Platform{% endblock %}
+{% block page_title %}Legal Complaint & Compliance Center{% endblock %}
+
+{% block content %}
+
+<!-- ── Quick Links ────────────────────────────────────────────────────── -->
+<div class="grid-3 mb-24">
+  <a href="https://cybercrime.gov.in" target="_blank" style="text-decoration:none">
+    <div class="card" style="padding:20px;text-align:center;transition:all .2s;cursor:pointer">
+      <div style="font-size:32px;margin-bottom:10px">⚖️</div>
+      <div style="font-size:13px;font-weight:700;color:var(--neon);margin-bottom:4px">Cybercrime Portal</div>
+      <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim)">cybercrime.gov.in</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--cyan)">File Complaint Online →</div>
+    </div>
+  </a>
+  <a href="https://www.cert-in.org.in" target="_blank" style="text-decoration:none">
+    <div class="card" style="padding:20px;text-align:center;transition:all .2s;cursor:pointer">
+      <div style="font-size:32px;margin-bottom:10px">🛡️</div>
+      <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px">CERT-In Portal</div>
+      <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim)">cert-in.org.in</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--cyan)">Report Incident →</div>
+    </div>
+  </a>
+  <a href="mailto:incident@cert-in.org.in" style="text-decoration:none">
+    <div class="card" style="padding:20px;text-align:center;transition:all .2s;cursor:pointer">
+      <div style="font-size:32px;margin-bottom:10px">📧</div>
+      <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px">CERT-In Email</div>
+      <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim)">incident@cert-in.org.in</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--cyan)">Send Report →</div>
+    </div>
+  </a>
+</div>
+
+<!-- ── FIR Step-by-Step ───────────────────────────────────────────────── -->
+<div class="card mb-24">
+  <div class="card-header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" style="width:18px;height:18px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    <h3>Step-by-Step Complaint Filing Guide</h3>
+  </div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+      {% set steps = [
+        ("01","Document Evidence","Screenshot all leaked data, note URLs, timestamps, and any communication from threat actors. Secure all digital evidence before it disappears.","neon"),
+        ("02","File Online Complaint","Visit cybercrime.gov.in → 'Report Cybercrime' → Choose 'Other Cyber Crimes' → Fill the complaint form with all documented details.","cyan"),
+        ("03","Get Reference Number","After submission you'll receive a complaint reference number. Note it down — you'll need it for police follow-up and tracking.","orange"),
+        ("04","Visit Cyber Police Cell","Visit your nearest cyber police station with a printed copy of your complaint. Request an FIR under IT Act Section 66/66C.","yellow"),
+        ("05","Report to CERT-In","Send incident details to incident@cert-in.org.in within 6 hours of discovery (mandatory for organizations under DPDP Act 2023).","purple"),
+        ("06","Consult Cybercrime Lawyer","Engage a cybercrime attorney for legal proceedings, especially if financial fraud or identity theft is involved.","red"),
+        ("07","Follow Up","Follow up with the police within 7 working days. Request progress updates. Escalate to SP Cyber Cell if no action is taken.","green"),
+        ("08","Monitor & Document","Continue monitoring for further leaks. Document all actions taken — this builds your legal case if prosecution is needed.","neon"),
+      ] %}
+      {% for num, title, desc, color in steps %}
+      <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:10px;right:14px;font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:rgba({{ {'neon':'0,212,170','cyan':'0,200,255','orange':'255,165,2','yellow':'255,221,87','purple':'165,94,234','red':'255,71,87','green':'46,213,115'}[color] }},0.08)">{{ num }}</div>
+        <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--{{ color }});margin-bottom:6px;letter-spacing:1px">STEP {{ num }}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:8px">{{ title }}</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">{{ desc }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ── Two column: Complaint Template + Applicable Laws ──────────────── -->
+<div class="grid-2 mb-24">
+
+  <!-- Complaint Template -->
+  <div class="card">
+    <div class="card-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" style="width:18px;height:18px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <h3>Complaint Template</h3>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="copyTemplate()">Copy</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <div id="complaintTemplate" style="background:#02060e;padding:18px;font-family:'Share Tech Mono',monospace;font-size:11.5px;line-height:1.9;color:var(--neon);border-radius:0 0 10px 10px">
+TO,<br>
+The Station House Officer,<br>
+Cyber Crime Cell, [Your City]<br>
+<br>
+<span style="color:var(--text-dim)">Subject: Complaint regarding Dark Web Data Breach</span><br>
+<br>
+Respected Sir/Madam,<br>
+<br>
+I, <span style="color:var(--orange)">[Your Full Name]</span>, residing at <span style="color:var(--orange)">[Your Address]</span>,<br>
+hereby submit this complaint regarding an online data breach<br>
+detected by our Cyber Threat Intelligence System.<br>
+<br>
+<span style="color:var(--cyan)">Incident Details:</span><br>
+Date of Discovery : <span style="color:var(--orange)">[Date]</span><br>
+Type of Data Leaked : <span style="color:var(--orange)">[Email/Password/Aadhaar/Bank]</span><br>
+Source of Leak : <span style="color:var(--orange)">[Dark Web Source / Paste Site]</span><br>
+Risk Score : <span style="color:var(--orange)">[Score from CTI Platform]</span><br>
+<br>
+<span style="color:var(--cyan)">Applicable Law:</span><br>
+IT Act 2000, Section 66C (Identity Theft)<br>
+IT Act 2000, Section 43A (Data Protection)<br>
+DPDP Act 2023, Section 8 (Data Fiduciary Obligation)<br>
+<br>
+Evidence attached: CTI Platform PDF Report<br>
+<br>
+Requesting immediate action and FIR registration.<br>
+<br>
+Yours faithfully,<br>
+<span style="color:var(--orange)">[Your Name]</span><br>
+Date: <span style="color:var(--orange)">[Date]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applicable Laws -->
+  <div class="card">
+    <div class="card-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" style="width:18px;height:18px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <h3>Applicable Laws — India</h3>
+    </div>
+    <div class="card-body" style="padding:12px 20px">
+      {% for law in template.applicable_laws %}
+      <div style="padding:10px 0;border-bottom:1px solid rgba(26,48,80,.4)">
+        <div style="font-size:12px;font-family:'Share Tech Mono',monospace;color:var(--orange);margin-bottom:3px">{{ law.section }}</div>
+        <div style="font-size:13px;color:var(--text-secondary)">{{ law.desc }}</div>
+      </div>
+      {% endfor %}
+      <div style="margin-top:14px;padding:12px;background:rgba(255,71,87,.05);border:1px solid rgba(255,71,87,.2);border-radius:6px">
+        <div style="font-size:11px;color:var(--red);font-family:'Share Tech Mono',monospace;font-weight:700">CERT-In Mandatory Reporting</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">Organizations must report incidents to CERT-In within <b style="color:var(--orange)">6 hours</b> of detection under the IT (Amendment) Rules 2022.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Evidence Checklist ─────────────────────────────────────────────── -->
+<div class="card">
+  <div class="card-header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="width:18px;height:18px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    <h3>Evidence Checklist</h3>
+    <span style="margin-left:auto;font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim)">Check before filing complaint</span>
+  </div>
+  <div class="card-body" style="padding:8px 20px">
+    {% for item in checklist %}
+    {% set pcolor = {'Essential':'red','High':'orange','Medium':'yellow','Low':'green'}[item.priority] %}
+    <div class="checklist-item">
+      <div style="cursor:pointer;flex-shrink:0" onclick="this.querySelector('svg').style.display='none';this.querySelector('.check-done').style.display='block'">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--border-bright)" stroke-width="2" style="width:20px;height:20px"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+        <svg class="check-done" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="display:none;width:20px;height:20px"><rect x="3" y="3" width="18" height="18" rx="3" fill="rgba(46,213,115,.1)"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div style="font-size:13px;color:var(--text-secondary);flex:1">{{ item.item }}</div>
+      <span class="badge badge-{{ pcolor }}" style="flex-shrink:0;font-size:10px">{{ item.priority }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyTemplate() {
+  const text = document.getElementById("complaintTemplate").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    Toast.show("Complaint template copied to clipboard!", "success");
+  });
+}
+</script>
+{% endblock %}

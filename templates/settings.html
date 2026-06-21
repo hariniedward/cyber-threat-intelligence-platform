@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Settings — CTI Platform{% endblock %}
+{% block page_title %}System Settings{% endblock %}
+
+{% block content %}
+
+{% if message %}
+<div class="alert-banner info mb-24">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
+  {{ message }}
+</div>
+{% endif %}
+
+<form method="POST" action="/settings">
+<div class="grid-2 mb-24">
+
+  <!-- ── Scan Settings ──────────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" style="width:18px;height:18px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <h3>Scan Configuration</h3>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label class="form-label">Scan Frequency</label>
+        <select name="scan_frequency" class="form-control">
+          <option value="manual"   {{ 'selected' if s.scan_frequency=='manual'   }}>Manual Only</option>
+          <option value="hourly"   {{ 'selected' if s.scan_frequency=='hourly'   }}>Every Hour</option>
+          <option value="daily"    {{ 'selected' if s.scan_frequency=='daily'    }}>Daily (Midnight)</option>
+          <option value="weekly"   {{ 'selected' if s.scan_frequency=='weekly'   }}>Weekly</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Threat Sensitivity</label>
+        <select name="threat_sensitivity" class="form-control">
+          <option value="high"   {{ 'selected' if s.threat_sensitivity=='high'   }}>High — All threats</option>
+          <option value="medium" {{ 'selected' if s.threat_sensitivity=='medium' }}>Medium — Recommended</option>
+          <option value="low"    {{ 'selected' if s.threat_sensitivity=='low'    }}>Low — Critical only</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Export Format</label>
+        <select name="export_format" class="form-control">
+          <option value="both"  {{ 'selected' if s.export_format=='both'  }}>Both PDF & Excel</option>
+          <option value="pdf"   {{ 'selected' if s.export_format=='pdf'   }}>PDF Only</option>
+          <option value="excel" {{ 'selected' if s.export_format=='excel' }}>Excel Only</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Alerts</label>
+        <select name="email_alerts" class="form-control">
+          <option value="off" {{ 'selected' if s.email_alerts=='off' }}>Disabled</option>
+          <option value="critical" {{ 'selected' if s.email_alerts=='critical' }}>Critical Only</option>
+          <option value="high" {{ 'selected' if s.email_alerts=='high' }}>High & Critical</option>
+          <option value="all" {{ 'selected' if s.email_alerts=='all' }}>All Alerts</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Alert Recipient Email</label>
+        <input type="email" name="alert_email" class="form-control"
+               value="{{ s.alert_email }}" placeholder="security@yourcompany.com"/>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SMTP Settings ──────────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" style="width:18px;height:18px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2-2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <h3>SMTP Email Configuration</h3>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label class="form-label">SMTP Host</label>
+        <input type="text" name="smtp_host" class="form-control"
+               value="{{ s.smtp_host }}" placeholder="smtp.gmail.com"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">SMTP Port</label>
+        <input type="number" name="smtp_port" class="form-control"
+               value="{{ s.smtp_port }}" placeholder="587"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">SMTP Username (Email)</label>
+        <input type="email" name="smtp_user" class="form-control"
+               value="{{ s.smtp_user }}" placeholder="your-email@gmail.com"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">SMTP Password / App Password</label>
+        <input type="password" name="smtp_pass" class="form-control"
+               value="{{ s.smtp_pass }}" placeholder="••••••••••••"/>
+      </div>
+
+      <div style="background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.2);border-radius:6px;padding:12px;font-size:12px;color:var(--text-dim);line-height:1.6">
+        <b style="color:var(--cyan)">Gmail Users:</b> Enable 2-Step Verification → Generate an App Password at
+        <a href="https://myaccount.google.com/apppasswords" target="_blank" style="color:var(--neon)">myaccount.google.com/apppasswords</a>
+        and use it as the SMTP password.
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Admin Credentials ──────────────────────────────────────────── -->
+<div class="card mb-24">
+  <div class="card-header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <h3>Admin Credentials</h3>
+    <span style="margin-left:auto;font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--red)">⚠ Change defaults immediately</span>
+  </div>
+  <div class="card-body">
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Admin Username</label>
+        <input type="text" name="admin_user" class="form-control"
+               value="{{ s.admin_user }}" placeholder="admin"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Admin Password</label>
+        <input type="password" name="admin_pass" class="form-control"
+               value="{{ s.admin_pass }}" placeholder="New secure password"/>
+      </div>
+    </div>
+    <div class="alert-banner high">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Default credentials are <b>admin / admin@123</b>. Change them before deploying this system to any network.
+    </div>
+  </div>
+</div>
+
+<!-- ── Save Button ────────────────────────────────────────────────── -->
+<div class="card">
+  <div class="card-body" style="padding:16px 20px">
+    <div class="flex justify-between items-center" style="flex-wrap:wrap;gap:12px">
+      <div style="font-size:13px;color:var(--text-dim)">
+        All settings are stored in the local SQLite database.
+      </div>
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Settings
+        </button>
+        <button type="button" class="btn btn-danger" onclick="clearAllData()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Clear All Scan Data
+        </button>
+        <a href="{{ url_for('scan_page') }}" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Run New Scan
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</form>
+
+<!-- ── System Info ────────────────────────────────────────────────── -->
+<div class="card mt-16" style="margin-top:20px">
+  <div class="card-header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" style="width:18px;height:18px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <h3>System Information</h3>
+  </div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+      {% for label, value in [
+        ("Platform","CTI Platform v1.0"),
+        ("Framework","Flask (Python 3)"),
+        ("Database","SQLite 3"),
+        ("Detection Engine","Heuristic + WSI AI Scoring"),
+        ("Export Formats","PDF (fpdf2) + Excel (openpyxl)"),
+        ("Legal Compliance","IT Act 2000 + DPDP Act 2023"),
+      ] %}
+      <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:6px;padding:12px">
+        <div style="font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">{{ label }}</div>
+        <div style="font-size:13px;color:var(--neon);font-weight:600">{{ value }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
